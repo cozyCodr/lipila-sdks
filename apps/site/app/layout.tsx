@@ -20,8 +20,11 @@ export default function Layout({ children }: { children: ReactNode }) {
       <body className="flex flex-col min-h-screen">
         <RootProvider theme={{ enabled: false, defaultTheme: "light" }}>
           <Banner id="lipila-unofficial" className="text-fd-muted-foreground">
-            An independent, community-built SDK for the&nbsp;<strong className="text-fd-foreground">Lipila</strong>&nbsp;payments
-            platform. Not affiliated with, or endorsed by, Lipila.
+            <span className="lipila-banner__text">
+              An independent, community-built SDK for the{" "}
+              <strong className="text-fd-foreground">Lipila</strong> payments platform. Not
+              affiliated with, or endorsed by, Lipila.
+            </span>
           </Banner>
           {children}
           <footer className="lip-credit">

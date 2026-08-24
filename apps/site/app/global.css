@@ -49,6 +49,36 @@ html {
   --font-sans: Arial, "Helvetica Neue", Helvetica, system-ui, sans-serif;
 }
 
+/* Unofficial notice banner: let it wrap and shrink on small screens
+   instead of clipping to a fixed height. Mobile-first. */
+#lipila-unofficial {
+  height: auto !important;
+  min-height: 2.75rem;
+  padding-block: 0.5rem;
+  padding-inline: 1rem 2.5rem; /* leave room for the close button on the right */
+  line-height: 1.4;
+  font-size: 0.75rem; /* 12px on phones */
+  text-wrap: pretty;
+}
+@media (min-width: 640px) {
+  #lipila-unofficial {
+    padding-inline: 2.75rem;
+    font-size: 0.8125rem; /* 13px */
+  }
+}
+@media (min-width: 768px) {
+  #lipila-unofficial {
+    font-size: 0.875rem; /* 14px on desktop */
+  }
+}
+/* Keep the message flowing as one sentence, not as separate flex items. */
+.lipila-banner__text {
+  display: block;
+  max-width: 60ch;
+  text-align: center;
+  text-wrap: balance;
+}
+
 /* =================== Landing =================== */
 .lp {
   max-width: 1120px;
