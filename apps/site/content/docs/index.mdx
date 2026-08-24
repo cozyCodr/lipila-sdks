@@ -1,0 +1,21 @@
+---
+title: Introduction
+description: An unofficial, server-side TypeScript SDK for Lipila mobile money and hosted card payments.
+---
+
+A server-side JavaScript and TypeScript SDK for Lipila mobile money and hosted card payments, with the payment-safety guarantees you would otherwise rebuild on every integration.
+
+This is a community project. It is not made by, affiliated with, or endorsed by Lipila, the payments company.
+
+## Why not call the API yourself?
+
+The hard parts are not the happy path. They are the interrupted request you must never blindly retry, the webhook you must verify against raw bytes, and the reconciliation you owe every uncertain outcome.
+
+<Cards>
+  <Card title="Safe by default" description="Sandbox unless you choose production. Interrupted charges become reconcile steps, never silent double-payments." />
+  <Card title="Verified webhooks" description="Constant-time HMAC over the untouched body, rotation aware, with stable event ids and dedupe." />
+  <Card title="Handlers, not state machines" description="Opt in to durable state and on.paid / on.failed handlers instead of hand-rolling a webhook flow." />
+  <Card title="Conformance-tested stores" description="Every store adapter is held to one shared contract suite, verified against a real database in CI." />
+</Cards>
+
+Ready to build? Start with the [step-by-step guide](/docs/getting-started).

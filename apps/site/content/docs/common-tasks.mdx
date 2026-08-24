@@ -1,0 +1,70 @@
+---
+title: Common tasks
+description: Copy-ready examples for the Lipila flows you reach for most.
+---
+
+Every example assumes a configured `client` from the [getting started guide](/docs/getting-started).
+
+## Collect a mobile money payment
+
+```ts title="@cozycodr/lipila v0.1.0"
+const { payment } = await client.payments.mobileMoney.create({
+  referenceId: order.id,
+  amount: 125.5,
+  accountNumber: "260971234567",
+  narration: "Order #1024",
+});
+// payment.status: "Pending" | "Successful" | "Failed"
+```
+
+`currency` is optional and defaults to `"ZMW"`. Lipila also documents `"USD"`.
+
+## Take a hosted card payment
+
+The SDK never accepts card numbers. Lipila hosts card entry and returns a redirect.
+
+```ts title="@cozycodr/lipila v0.1.0"
+const { action } = await client.payments.card.create({
+  referenceId: order.id,
+  amount: 250,
+  currency: "ZMW",
+  customer,
+  backUrl: "https://shop.example/return",
+  referenceData: order.id,
+});
+
+if (action?.type === "redirect") {
+  // Send the customer to the hosted page. It is not proof of payment.
+  redirect(action.url);
+}
+```
+
+## Reconcile an uncertain result
+
+Reads never charge, so they are safe to retry. Never create a new payment after an unknown outcome; reconcile the original reference instead.
+
+```ts title="@cozycodr/lipila v0.1.0"
+const payment = await client.payments.retrieve(order.id, {
+  retry: { maxAttempts: 3 },
+});
+```
+
+## Automate fulfilment with lifecycle handlers
+
+Register handlers once on the client. They run when a durable store records a new payment state.
+
+```ts title="@cozycodr/lipila v0.1.0"
+const client = lipila({
+  apiKey,
+  webhookSecret,
+  lifecycle: {
+    store,
+    on: {
+      paid: ({ payment }) => orders.fulfil(payment.referenceId),
+      failed: ({ payment }) => orders.markFailed(payment.referenceId),
+    },
+  },
+});
+```
+
+See [Verify and handle webhooks](/docs/webhooks) for the endpoint, and the [PostgreSQL adapter](/docs/postgres) for the store.

@@ -1,0 +1,34 @@
+---
+title: Conformance suite
+description: Prove any custom Lipila store adapter is correct by running the same shared test suite.
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+A store adapter holds real payment state and coordinates webhooks across processes. Getting it subtly wrong means lost or duplicated fulfilment. The conformance suite is the executable definition of a correct adapter, and every official adapter passes it.
+
+Reach for it when you write your own store, for a database the published adapters do not cover.
+
+```ts title="@cozycodr/lipila-store-conformance v0.1.0"
+import { paymentStoreConformance } from "@cozycodr/lipila-store-conformance";
+import { dynamoPaymentStore } from "./dynamo-store.js";
+
+const namespace = `lipila:conformance:${crypto.randomUUID()}`;
+
+paymentStoreConformance({
+  createStore: () => dynamoPaymentStore({ namespace }),
+  clearTestNamespace: () => deleteOnlyConformanceRows(namespace),
+});
+```
+
+## What it checks
+
+- **Atomic reservation.** Exactly one of many concurrent `prepare` calls wins.
+- **Observation dedup.** The same observation id is recorded once, and a final state is never replaced by a stale one.
+- **Claim reporting.** `processWebhook` distinguishes a first claim from a lease takeover.
+- **Release guard.** A settled payment is never released back to available.
+- **Unprepared observation.** An observation for a reference that was never prepared is rejected.
+
+<Callout type="warn">Run it only against a disposable test deployment. Give each run a unique namespace, and delete only that namespace's rows. Never drop or truncate a database, and never run conformance against production.</Callout>
+
+The suite ships as vitest checks and lists `vitest` as a peer dependency, so it uses your project's test runner rather than pulling in a second copy.

@@ -1,0 +1,122 @@
+---
+title: Getting started
+description: From zero to your first verified Lipila payment, step by step.
+---
+
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import { Callout } from "fumadocs-ui/components/callout";
+
+This walks a server-side app from account setup to its first payment and webhook. Node.js 22 or newer is required.
+
+<Steps>
+
+<Step>
+
+### Create your sandbox and production accounts
+
+Lipila runs two separate dashboards. Onboard in both. Credentials do not cross environments, so a sandbox key never works against production.
+
+- Sandbox: [dashboard.lipila.dev](https://dashboard.lipila.dev)
+- Production: [dashboard.lipila.io](https://dashboard.lipila.io)
+
+</Step>
+
+<Step>
+
+### Get your API key and webhook secret
+
+In each dashboard, generate the environment's API key and copy its webhook signing secret. Keep both server-side.
+
+```bash title="terminal"
+LIPILA_API_KEY=Lsk_sandbox_xxx
+LIPILA_WEBHOOK_SECRET=whsec_xxx
+```
+
+<Callout type="warn">The API key gives direct account access. Never expose it in browser code.</Callout>
+
+</Step>
+
+<Step>
+
+### Install the SDK
+
+```bash title="terminal"
+npm i @cozycodr/lipila
+```
+
+</Step>
+
+<Step>
+
+### Configure one client
+
+The client defaults to the sandbox. Production must be selected explicitly.
+
+```ts title="@cozycodr/lipila v0.1.0"
+import { lipila } from "@cozycodr/lipila";
+
+export const client = lipila({
+  apiKey: process.env.LIPILA_API_KEY!,
+  environment: "sandbox",
+  webhookSecret: process.env.LIPILA_WEBHOOK_SECRET,
+});
+```
+
+</Step>
+
+<Step>
+
+### Create your first mobile money payment
+
+Give each attempt a unique `referenceId` you own. It stays safe to reconcile against later.
+
+```ts title="@cozycodr/lipila v0.1.0"
+const { payment } = await client.payments.mobileMoney.create({
+  referenceId: order.id,
+  amount: 125.5,
+  accountNumber: "260971234567",
+  narration: "Order #1024",
+});
+
+// payment.status: "Pending" | "Successful" | "Failed"
+```
+
+`Pending` means Lipila accepted the attempt and is still processing it.
+
+</Step>
+
+<Step>
+
+### Receive the final outcome by webhook
+
+Completion is asynchronous. Verify the signature against the raw body, then act on the event.
+
+```ts title="@cozycodr/lipila v0.1.0"
+app.post("/webhooks/lipila", express.raw({ type: "application/json" }), (req, res) => {
+  const event = client.webhooks.verify({ rawBody: req.body, headers: req.headers });
+  if (event.shape === "transaction") fulfil(event.id, event.transaction);
+  res.sendStatus(204);
+});
+```
+
+For automatic fulfilment with dedupe and retries, see [Verify and handle webhooks](/docs/webhooks).
+
+</Step>
+
+<Step>
+
+### Reconcile anything uncertain
+
+If a create is interrupted, never retry it blindly. Reconcile the original reference. Reads are safe to retry.
+
+```ts title="@cozycodr/lipila v0.1.0"
+const payment = await client.payments.retrieve(order.id, {
+  retry: { maxAttempts: 3 },
+});
+```
+
+</Step>
+
+</Steps>
+
+Next: browse [Common tasks](/docs/common-tasks) for card payments, reconciliation, and lifecycle handlers.

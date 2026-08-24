@@ -1,0 +1,11 @@
+{
+  "kind": "webhook-signature",
+  "provenance": "synthetic-openssl",
+  "description": "Synthetic webhook signature vector generated independently with OpenSSL",
+  "algorithm": "HMAC-SHA256",
+  "secretBase64": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
+  "webhookId": "evt_test_123",
+  "webhookTimestamp": "1700000000",
+  "rawBody": "{\"type\":\"transaction.completed\",\"data\":{\"status\":\"Successful\"}}",
+  "signatureHeader": "v1,Dt2urBbek6MIFbgNr7EKjTMfZJiUIacZlXY9n3K1D+0="
+}

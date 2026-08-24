@@ -1,0 +1,57 @@
+{
+  "name": "@cozycodr/lipila-store-memory",
+  "version": "0.0.0-development",
+  "description": "In-memory lifecycle store for Lipila tests and local examples",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --clean && tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@cozycodr/lipila-store-core": "0.0.0-development"
+  },
+  "peerDependencies": {
+    "@cozycodr/lipila": ">=0.0.0-development <1"
+  },
+  "devDependencies": {
+    "@cozycodr/lipila": "0.0.0-development",
+    "@cozycodr/lipila-store-conformance": "0.0.0-development",
+    "@types/node": "^24.10.0",
+    "tsup": "^8.5.1",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
+  },
+  "license": "MIT",
+  "homepage": "https://lipilasdk.oapps.dev",
+  "bugs": {
+    "url": "https://github.com/cozyCodr/lipila-sdks/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cozyCodr/lipila-sdks.git",
+    "directory": "sdks/store-memory"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "lipila-sdks",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "npm@10.9.4",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "sdks/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @cozycodr/lipila && npm run build -w @cozycodr/lipila-store-core && npm run build -w @cozycodr/lipila-store-conformance && npm run build -w @cozycodr/lipila-store-memory && npm run build -w @cozycodr/lipila-store-postgres",
+    "check": "npm run format:check && npm run build && npm run typecheck && npm test",
+    "format": "biome check --write .",
+    "format:check": "biome check .",
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "site:dev": "npm run dev -w @cozycodr/lipila-site",
+    "site:build": "npm run build -w @cozycodr/lipila-site",
+    "site:preview": "npm run preview -w @cozycodr/lipila-site"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.10"
+  },
+  "overrides": {
+    "esbuild": "0.27.2"
+  },
+  "license": "MIT",
+  "homepage": "https://lipilasdk.oapps.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cozyCodr/lipila-sdks.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cozyCodr/lipila-sdks/issues"
+  }
+}

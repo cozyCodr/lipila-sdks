@@ -1,0 +1,56 @@
+{
+  "name": "@cozycodr/lipila",
+  "version": "0.0.0-development",
+  "description": "Server-side JavaScript and TypeScript SDK for Lipila payments",
+  "keywords": [
+    "lipila",
+    "payments",
+    "mobile-money",
+    "zambia",
+    "typescript"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "docs",
+    "LICENSE"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --clean && tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "tsup": "^8.5.1",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
+  },
+  "license": "MIT",
+  "homepage": "https://lipilasdk.oapps.dev",
+  "bugs": {
+    "url": "https://github.com/cozyCodr/lipila-sdks/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cozyCodr/lipila-sdks.git",
+    "directory": "sdks/javascript"
+  }
+}

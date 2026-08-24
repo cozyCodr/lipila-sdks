@@ -1,0 +1,48 @@
+---
+title: Verify and handle webhooks
+description: Verify Lipila webhook signatures against raw bytes, or handle them end to end with a store.
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+Lipila signs each webhook. The signature covers the exact raw request bytes, so you must verify before any JSON parsing or reserialization.
+
+<Callout type="warn">Register the route with a raw body parser before any JSON middleware consumes it.</Callout>
+
+## Verify directly
+
+```ts title="@cozycodr/lipila v0.1.0"
+import express from "express";
+import { LipilaWebhookVerificationError, lipila } from "@cozycodr/lipila";
+
+const client = lipila({ apiKey, webhookSecret });
+
+app.post("/webhooks/lipila", express.raw({ type: "application/json" }), (req, res) => {
+  try {
+    const event = client.webhooks.verify({ rawBody: req.body, headers: req.headers });
+    if (event.shape === "transaction") {
+      record(event.id, event.transaction); // deduplicate event.id yourself
+    }
+    res.sendStatus(204);
+  } catch (error) {
+    if (error instanceof LipilaWebhookVerificationError) return res.sendStatus(400);
+    res.sendStatus(503);
+  }
+});
+```
+
+`verify()` checks the id, timestamp, and signature with a constant-time HMAC and a five minute freshness window. It does not deduplicate. Persist each `event.id`, or use `handle()` below.
+
+## Handle end to end
+
+With a lifecycle store configured, `handle()` verifies, associates the provider identity with your payment, processes each webhook id once, and runs your handlers.
+
+```ts title="@cozycodr/lipila v0.1.0"
+app.post("/webhooks/lipila", express.raw({ type: "application/json" }), async (req, res) => {
+  const receipt = await client.webhooks.handle({ rawBody: req.body, headers: req.headers });
+  // 5xx tells Lipila to retry; the handler is safe to run again.
+  res.sendStatus(receipt.acknowledge ? 204 : 500);
+});
+```
+
+Handlers are delivered at least once, so keep them idempotent with the supplied `idempotencyKey`. The store fences a handler against running twice at once when a lease is taken over. Set the store's `leaseMs` above your slowest handler.

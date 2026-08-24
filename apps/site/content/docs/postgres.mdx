@@ -1,0 +1,41 @@
+---
+title: PostgreSQL adapter
+description: Durable Lipila lifecycle state in PostgreSQL, coordinated safely across processes.
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+Lifecycle handling needs a durable store so payment creation and the eventual webhook, which happen in different requests and often different processes, agree on state. PostgreSQL is the published adapter.
+
+```ts title="@cozycodr/lipila-store-postgres v0.1.0"
+import { lipila } from "@cozycodr/lipila";
+import { postgresPaymentStore } from "@cozycodr/lipila-store-postgres";
+
+const store = postgresPaymentStore({ connectionString, namespace });
+await store.migrate();
+
+const client = lipila({ apiKey, webhookSecret, lifecycle: { store, on } });
+```
+
+Pass either `connectionString` or an existing `pg.Pool`, never both. `close()` closes only a pool the adapter created. Migrations are explicit, repeatable, and forward only, and never run during payment handling.
+
+## What it guarantees
+
+- **Atomic reservations.** One `prepare` wins per reference, so concurrent creates cannot both dispatch.
+- **Webhook leases.** Each webhook is claimed, processed once, and completed only after the handler succeeds. Lease expiry is evaluated on the database clock.
+- **Idempotent projections.** A settled payment is never overwritten by a late or out-of-order event.
+
+Use a distinct `namespace` for every merchant and environment, for example `lipila:production:merchant-123`.
+
+## Test it against a real database
+
+The suite skips unless `LIPILA_POSTGRES_TEST_URL` is set. It uses a unique namespace per run and deletes only its own rows.
+
+```bash title="terminal"
+LIPILA_POSTGRES_TEST_URL='postgresql://user:pass@127.0.0.1:5432/lipila_test' \
+  npm run test:integration -w @cozycodr/lipila-store-postgres
+```
+
+It runs the shared conformance suite plus SDK-level lifecycle checks: handler retry after a failure, no concurrent re-run on lease takeover, and duplicate acknowledgement.
+
+<Callout>Adapters for MongoDB, MySQL, and Cassandra exist in the repository but are not published yet, because their queries have not run against a real engine. Use PostgreSQL, or write a store and hold it to the [conformance suite](/docs/conformance).</Callout>

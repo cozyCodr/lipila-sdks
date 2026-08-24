@@ -1,0 +1,59 @@
+{
+  "provenance": {
+    "kind": "synthetic_from_documentation",
+    "source": "https://blaze-docs.lipila.dev/docs/collections/bankcollections.html",
+    "environment": "sandbox",
+    "observedDate": "2026-08-22",
+    "operation": "create_card_payment"
+  },
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/collections/card",
+    "headers": {
+      "accept": "application/json",
+      "content-type": "application/json",
+      "x-api-key": "REDACTED",
+      "callbackUrl": "https://merchant.example/webhooks/lipila"
+    },
+    "body": {
+      "customerInfo": {
+        "firstName": "Jane",
+        "lastName": "Doe",
+        "phoneNumber": "260000000000",
+        "email": "jane@example.com",
+        "city": "Lusaka",
+        "country": "ZM",
+        "address": "REDACTED",
+        "zip": "10101"
+      },
+      "collectionRequest": {
+        "referenceId": "order_card_123",
+        "amount": 100,
+        "narration": "Order 123",
+        "accountNumber": "260000000000",
+        "currency": "ZMW",
+        "backUrl": "https://merchant.example/payments/return",
+        "referenceData": "cart_123"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "status": "Pending",
+      "referenceId": "lipila_card_123",
+      "identifier": "order_card_123",
+      "paymentType": "Card",
+      "cardRedirectionUrl": "https://checkout.example/opaque-session"
+    }
+  },
+  "expectedSdkResult": {
+    "submittedReferenceId": "order_card_123",
+    "paymentStatus": "Pending",
+    "action": {
+      "type": "redirect",
+      "url": "https://checkout.example/opaque-session"
+    },
+    "lifecycleState": "action_required"
+  }
+}
