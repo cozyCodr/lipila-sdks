@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://lipilasdk.oapps.dev"),
   title: {
     default: "Lipila SDK",
-    template: "%s — Lipila SDK",
+    template: "%s · Lipila SDK",
   },
   description:
     "An independent, community-built SDK for the Lipila payments platform. Payment safety, verified webhooks, and durable lifecycle handling, written once and reused.",

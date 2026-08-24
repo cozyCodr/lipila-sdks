@@ -5,7 +5,7 @@ description: Durable Lipila lifecycle state in PostgreSQL, coordinated safely ac
 
 import { Callout } from "fumadocs-ui/components/callout";
 
-Lifecycle handling needs a durable store so payment creation and the eventual webhook, which happen in different requests and often different processes, agree on state. PostgreSQL is the published adapter.
+Lifecycle handling needs a durable store so payment creation and the eventual webhook, which happen in different requests and often different processes, agree on state. Use the PostgreSQL adapter.
 
 ```ts title="@cozycodr/lipila-store-postgres v0.1.0"
 import { lipila } from "@cozycodr/lipila";
@@ -36,6 +36,6 @@ LIPILA_POSTGRES_TEST_URL='postgresql://user:pass@127.0.0.1:5432/lipila_test' \
   npm run test:integration -w @cozycodr/lipila-store-postgres
 ```
 
-It runs the shared conformance suite plus SDK-level lifecycle checks: handler retry after a failure, no concurrent re-run on lease takeover, and duplicate acknowledgement.
+It runs the shared conformance suite plus lifecycle checks against your database.
 
-<Callout>Adapters for MongoDB, MySQL, and Cassandra exist in the repository but are not published yet, because their queries have not run against a real engine. Use PostgreSQL, or write a store and hold it to the [conformance suite](/docs/conformance).</Callout>
+<Callout>Using a different database? Implement the `PaymentLifecycleStore` interface and validate it with the [conformance suite](/docs/conformance).</Callout>

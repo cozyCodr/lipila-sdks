@@ -7,7 +7,7 @@ import { Callout } from "fumadocs-ui/components/callout";
 
 A store adapter holds real payment state and coordinates webhooks across processes. Getting it subtly wrong means lost or duplicated fulfilment. The conformance suite is the executable definition of a correct adapter, and every official adapter passes it.
 
-Reach for it when you write your own store, for a database the published adapters do not cover.
+Reach for it when you write your own store for a database the SDK does not already provide.
 
 ```ts title="@cozycodr/lipila-store-conformance v0.1.0"
 import { paymentStoreConformance } from "@cozycodr/lipila-store-conformance";
