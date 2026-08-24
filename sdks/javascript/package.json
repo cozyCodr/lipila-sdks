@@ -1,6 +1,6 @@
 {
   "name": "@cozycodr/lipila",
-  "version": "0.0.0-development",
+  "version": "0.1.0",
   "description": "Server-side JavaScript and TypeScript SDK for Lipila payments",
   "keywords": [
     "lipila",
@@ -13,6 +13,7 @@
   "sideEffects": false,
   "files": [
     "dist",
+    "README.md",
     "docs",
     "LICENSE"
   ],
@@ -35,7 +36,8 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --clean && tsc -p tsconfig.build.json",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepack": "npm run build"
   },
   "devDependencies": {
     "@types/node": "^24.10.0",

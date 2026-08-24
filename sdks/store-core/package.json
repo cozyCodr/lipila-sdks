@@ -1,11 +1,12 @@
 {
   "name": "@cozycodr/lipila-store-core",
-  "version": "0.0.0-development",
+  "version": "0.1.0",
   "description": "Shared contracts and invariants for Lipila lifecycle store adapters",
   "type": "module",
   "sideEffects": false,
   "files": [
     "dist",
+    "README.md",
     "LICENSE"
   ],
   "main": "./dist/index.cjs",
@@ -26,13 +27,14 @@
   },
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --clean && tsc -p tsconfig.build.json",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepack": "npm run build"
   },
   "peerDependencies": {
-    "@cozycodr/lipila": ">=0.0.0-development <1"
+    "@cozycodr/lipila": ">=0.1.0 <1"
   },
   "devDependencies": {
-    "@cozycodr/lipila": "0.0.0-development",
+    "@cozycodr/lipila": "^0.1.0",
     "@types/node": "^24.10.0",
     "tsup": "^8.5.1",
     "typescript": "^7.0.2"

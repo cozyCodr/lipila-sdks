@@ -1,6 +1,6 @@
 {
   "name": "@cozycodr/lipila-store-memory",
-  "version": "0.0.0-development",
+  "version": "0.1.0",
   "description": "In-memory lifecycle store for Lipila tests and local examples",
   "type": "module",
   "sideEffects": false,
@@ -28,17 +28,18 @@
   "scripts": {
     "build": "tsup src/index.ts --format esm,cjs --clean && tsc -p tsconfig.build.json",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepack": "npm run build"
   },
   "dependencies": {
-    "@cozycodr/lipila-store-core": "0.0.0-development"
+    "@cozycodr/lipila-store-core": "^0.1.0"
   },
   "peerDependencies": {
-    "@cozycodr/lipila": ">=0.0.0-development <1"
+    "@cozycodr/lipila": ">=0.1.0 <1"
   },
   "devDependencies": {
-    "@cozycodr/lipila": "0.0.0-development",
-    "@cozycodr/lipila-store-conformance": "0.0.0-development",
+    "@cozycodr/lipila": "^0.1.0",
+    "@cozycodr/lipila-store-conformance": "^0.1.0",
     "@types/node": "^24.10.0",
     "tsup": "^8.5.1",
     "typescript": "^7.0.2",

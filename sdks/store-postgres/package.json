@@ -1,6 +1,6 @@
 {
   "name": "@cozycodr/lipila-store-postgres",
-  "version": "0.0.0-development",
+  "version": "0.1.0",
   "description": "PostgreSQL lifecycle store adapter for Lipila",
   "type": "module",
   "sideEffects": false,
@@ -29,18 +29,19 @@
     "build": "tsup src/index.ts --format esm,cjs --clean --external pg && tsc -p tsconfig.build.json",
     "test": "vitest run",
     "test:integration": "vitest run test/postgres.integration.test.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepack": "npm run build"
   },
   "dependencies": {
-    "@cozycodr/lipila-store-core": "0.0.0-development"
+    "@cozycodr/lipila-store-core": "^0.1.0"
   },
   "peerDependencies": {
-    "@cozycodr/lipila": ">=0.0.0-development <1",
+    "@cozycodr/lipila": ">=0.1.0 <1",
     "pg": ">=8.13.0 <9"
   },
   "devDependencies": {
-    "@cozycodr/lipila": "0.0.0-development",
-    "@cozycodr/lipila-store-conformance": "0.0.0-development",
+    "@cozycodr/lipila": "^0.1.0",
+    "@cozycodr/lipila-store-conformance": "^0.1.0",
     "@types/node": "^24.10.0",
     "@types/pg": "^8.15.6",
     "pg": "^8.16.3",
