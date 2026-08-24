@@ -91,7 +91,7 @@ if (result.action?.type === "redirect") {
 
 `action.type === "redirect"` means customer action is required. It does not mean the payment succeeded. Treat the URL as opaque and use a verified webhook or explicit reconciliation for the durable final outcome.
 
-Lipila's public card documentation is inconsistent about `accountNumber`, request nesting, return behavior and transaction identity. The SDK follows the documented nested examples conservatively while preserving the complete response at `result.payment.raw`.
+Card field semantics such as `accountNumber`, request nesting, return behavior and transaction identity can vary. The SDK follows Lipila's documented request shape and always preserves the complete provider response at `result.payment.raw`.
 
 ## Retrieve payment status
 
@@ -132,7 +132,7 @@ Verification checks `webhook-id`, `webhook-timestamp` and `webhook-signature` us
 
 Add `lifecycle` to the same client when you want the SDK to coordinate durable state and handlers:
 
-> Lifecycle handling and the database adapters are currently an advanced preview. `store` must be an object implementing the exported `PaymentLifecycleStore` interface. It is **not** a bare connection string, database URL, password, pool or ORM client. Install the separate adapter package for your database and use its constructor.
+> Lifecycle handling is optional and currently in preview. `store` must be an object implementing the exported `PaymentLifecycleStore` interface. It is **not** a bare connection string, database URL, password, pool or ORM client. Install the adapter package for your database and use its constructor.
 
 ```ts
 const client = lipila({

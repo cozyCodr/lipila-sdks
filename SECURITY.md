@@ -26,7 +26,7 @@ In scope:
 
 Out of scope:
 
-- vulnerabilities in Lipila's own API or dashboards — report those to Lipila;
+- vulnerabilities in Lipila's own API or dashboards (report those to Lipila);
 - issues that require an already-compromised application process;
 - missing hardening that has no demonstrated impact.
 
@@ -38,4 +38,4 @@ If you believe a credential has been exposed, rotate it in the relevant Lipila d
 
 ## Supported versions
 
-Every package is currently `0.x` and pre-release. Only the latest published version of each package receives fixes. The database store adapters are preview packages and are not yet recommended for production use.
+Every package is currently `0.x` and pre-release. Only the latest published version of each package receives fixes. The store adapters are in preview; test them against a non-production database first.

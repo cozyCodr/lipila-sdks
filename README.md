@@ -4,6 +4,12 @@ Developer-friendly, provider-specific SDKs for the Lipila payment platform.
 
 This is a community-maintained project, not an official Lipila package. The first implementation is the server-side JavaScript/TypeScript package [`@cozycodr/lipila`](sdks/javascript/README.md). Future language implementations will follow the same observable behavior while keeping idiomatic interfaces.
 
+Documentation: **https://lipilasdk.oapps.dev**
+
+```bash
+npm install @cozycodr/lipila
+```
+
 ## Supported operations
 
 - Create mobile-money payments
@@ -26,9 +32,12 @@ conformance/          Cross-language conformance guidance
 examples/             Integration examples
 ```
 
-PostgreSQL is the only published database adapter. `@cozycodr/lipila-store-postgres` is a preview package and remains preview until its real-engine concurrency and migration release gates pass. `@cozycodr/lipila-store-memory` is available only for tests and local examples.
+Store adapters are optional and only needed for lifecycle handling:
 
-The MongoDB, MySQL/MariaDB and Cassandra adapters live in this repository but are **not published**. No query in them has been exercised against a real engine, so they are marked private until they run the shared conformance suite against their database in CI.
+- `@cozycodr/lipila-store-postgres` for durable, cross-process state (in preview).
+- `@cozycodr/lipila-store-memory` for tests and local development.
+
+Using a different database? Implement `PaymentLifecycleStore` and validate it with `@cozycodr/lipila-store-conformance`.
 
 ## Design principles
 
@@ -50,7 +59,7 @@ npm install
 npm run check
 ```
 
-Read [BRANCHES.md](BRANCHES.md) before starting work. Provider findings and unresolved documentation contradictions are recorded in [spec/provider-contract.md](spec/provider-contract.md).
+Read [BRANCHES.md](BRANCHES.md) and [AGENTS.md](AGENTS.md) before contributing. The language-neutral behavior every SDK follows is described in [spec/README.md](spec/README.md).
 
 ## Licence
 

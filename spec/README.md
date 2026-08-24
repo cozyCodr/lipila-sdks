@@ -23,7 +23,7 @@ Sandbox and production are separate merchant environments. Merchants onboard sep
 - Treat a non-empty `cardRedirectionUrl` as an opaque customer redirect action, not payment success.
 - Preserve the caller's submitted reference separately from all returned identity fields.
 - Apply the same no-mutation-retry and unknown-outcome rules as mobile money.
-- Keep `accountNumber`, `backUrl` and identity semantics provisional until sandbox fixtures or provider confirmation resolve the documentation gaps.
+- Treat `accountNumber`, `backUrl` and identity semantics as provisional, and preserve the full provider response so callers can adapt.
 
 ### Retrieve collection status
 
@@ -69,4 +69,4 @@ Sandbox and production are separate merchant environments. Merchants onboard sep
 
 ## Evidence
 
-Behavior here is grounded in Lipila's public documentation, its observed contradictions, and conservative implementation decisions recorded by the maintainers. Fixtures under [fixtures](fixtures) must be synthetic, redacted sandbox captures, or provider-confirmed examples with their provenance recorded.
+Behavior here is grounded in Lipila's public documentation and conservative, safety-first implementation decisions. Fixtures under [fixtures](fixtures) must be synthetic, redacted sandbox captures, or provider-confirmed examples with their provenance recorded.
