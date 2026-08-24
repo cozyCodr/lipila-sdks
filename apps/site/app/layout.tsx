@@ -2,6 +2,7 @@ import { Banner } from "fumadocs-ui/components/banner";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import SearchDialog from "@/components/search";
 import "./global.css";
 
 export const metadata: Metadata = {
@@ -18,7 +19,10 @@ export default function Layout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
-        <RootProvider theme={{ enabled: false, defaultTheme: "light" }}>
+        <RootProvider
+          theme={{ enabled: false, defaultTheme: "light" }}
+          search={{ SearchDialog }}
+        >
           <Banner id="lipila-unofficial" className="text-fd-muted-foreground">
             <span className="lipila-banner__text">
               An independent, community-built SDK for the{" "}
