@@ -22,7 +22,7 @@
     "site:preview": "npm run preview -w @cozycodr/lipila-site"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.10"
+    "@biomejs/biome": "^2.5.11"
   },
   "overrides": {
     "esbuild": "0.27.2"
