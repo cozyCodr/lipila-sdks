@@ -9,7 +9,7 @@
     "preview": "npx serve out"
   },
   "dependencies": {
-    "fumadocs-core": "^16.15.1",
+    "fumadocs-core": "^16.15.4",
     "fumadocs-mdx": "^15.3.1",
     "fumadocs-ui": "^16.15.1",
     "next": "^16.3.2",
