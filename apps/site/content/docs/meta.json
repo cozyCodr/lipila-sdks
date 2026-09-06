@@ -1,4 +1,12 @@
 {
   "title": "Documentation",
-  "pages": ["index", "getting-started", "common-tasks", "webhooks", "postgres", "conformance"]
+  "pages": [
+    "index",
+    "getting-started",
+    "common-tasks",
+    "webhooks",
+    "go",
+    "postgres",
+    "conformance"
+  ]
 }

@@ -1,0 +1,162 @@
+---
+title: Go SDK
+description: The same payment-safe Lipila client for Go services, standard library only.
+---
+
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import { Callout } from "fumadocs-ui/components/callout";
+
+The Go SDK implements the same contract as the JavaScript SDK: mobile money and hosted card collections, status lookup, and webhook verification, with the same safety rule above all others. A payment mutation is never retried automatically. It imports only the Go standard library.
+
+Source and API reference: [github.com/cozyCodr/lipila-go](https://github.com/cozyCodr/lipila-go), [pkg.go.dev](https://pkg.go.dev/github.com/cozyCodr/lipila-go). Go 1.23 or newer.
+
+<Steps>
+
+<Step>
+
+### Install
+
+```bash title="terminal"
+go get github.com/cozyCodr/lipila-go@v0.1.0
+```
+
+</Step>
+
+<Step>
+
+### Configure one client
+
+The client defaults to the sandbox. Production must be selected explicitly, and every configuration problem fails at startup rather than on the first live request.
+
+```go title="lipila-go v0.1.0"
+import lipila "github.com/cozyCodr/lipila-go"
+
+client, err := lipila.New(lipila.Config{
+    APIKey:        os.Getenv("LIPILA_API_KEY"),
+    Environment:   lipila.Sandbox,
+    WebhookSecret: os.Getenv("LIPILA_WEBHOOK_SECRET"),
+})
+if err != nil {
+    log.Fatal(err)
+}
+```
+
+<Callout type="warn">The API key gives direct account access. Construct the client only in server-side code.</Callout>
+
+</Step>
+
+<Step>
+
+### Create your first mobile money payment
+
+Give each attempt a unique `ReferenceID` you own and persist it before calling Create. It stays safe to reconcile against later. The customer receives a PIN prompt on their phone.
+
+```go title="lipila-go v0.1.0"
+result, err := client.Payments.MobileMoney.Create(ctx, lipila.MobileMoneyPaymentRequest{
+    ReferenceID:   order.ID,
+    Amount:        125.5,
+    AccountNumber: "260971234567",
+    Narration:     "Order #1024",
+})
+if err != nil {
+    var unknown *lipila.UnknownOutcomeError
+    if errors.As(err, &unknown) {
+        // Lipila may have received the request. Reconcile by
+        // unknown.ReferenceID before submitting again.
+    }
+    return err
+}
+// result.Payment.Status: "Pending" | "Successful" | "Failed"
+```
+
+`Pending` means Lipila accepted the attempt and is still processing it. A `*lipila.UnknownOutcomeError` means the outcome is uncertain; resubmitting blindly could charge a customer twice.
+
+</Step>
+
+<Step>
+
+### Poll for the outcome
+
+Reads are side-effect free, so bounded retries are safe and opt-in per call.
+
+```go title="lipila-go v0.1.0"
+payment, err := client.Payments.Retrieve(ctx, order.ID,
+    &lipila.RetrieveOptions{MaxAttempts: 3})
+```
+
+</Step>
+
+<Step>
+
+### Take a card payment
+
+Card collections return a hosted-checkout URL. Send the customer there; the charge completes on Lipila's page, never on yours.
+
+```go title="lipila-go v0.1.0"
+result, err := client.Payments.Card.Create(ctx, lipila.CardPaymentRequest{
+    ReferenceID:   order.ID,
+    Amount:        125.5,
+    Narration:     "Order #1024",
+    AccountNumber: customer.AccountNumber,
+    ReferenceData: order.CartID,
+    BackURL:       "https://shop.example/payments/return",
+    Customer: lipila.CardCustomer{
+        FirstName: "Jane", LastName: "Doe",
+        PhoneNumber: "260971234567", Email: "jane@example.com",
+        City: "Lusaka", Country: "ZM",
+        Address: "1 Example Road", Zip: "10101",
+    },
+})
+if err != nil {
+    return err
+}
+http.Redirect(w, r, result.RedirectURL, http.StatusSeeOther)
+```
+
+</Step>
+
+<Step>
+
+### Verify webhooks
+
+Hand `Verify` the untouched body bytes and the request headers. It runs the full documented scheme: constant-time HMAC-SHA256 over the raw body, a five minute timestamp tolerance, and secret rotation support.
+
+```go title="lipila-go v0.1.0"
+func handleWebhook(w http.ResponseWriter, r *http.Request) {
+    body, err := io.ReadAll(r.Body)
+    if err != nil {
+        http.Error(w, "bad request", http.StatusBadRequest)
+        return
+    }
+    event, err := client.Webhooks.Verify(body, r.Header)
+    if err != nil {
+        http.Error(w, "invalid signature", http.StatusUnauthorized)
+        return
+    }
+    if event.Shape == lipila.ShapeTransaction {
+        fulfil(event.ID, event.Transaction)
+    }
+    w.WriteHeader(http.StatusOK)
+}
+```
+
+Persist `event.ID` to deduplicate redeliveries; Lipila retries with the same id.
+
+</Step>
+
+</Steps>
+
+## Errors are structured
+
+Every failure is a `*lipila.Error` with `Code`, `Operation`, `Outcome`, and `NextStep`, or one of two specialized types you branch on with `errors.As`: `*lipila.UnknownOutcomeError` for interrupted mutations and `*lipila.WebhookVerificationError` for rejected webhooks. Messages never contain your API key or webhook secret.
+
+```go title="lipila-go v0.1.0"
+var apiErr *lipila.Error
+if errors.As(err, &apiErr) && apiErr.Code == lipila.CodeRateLimited {
+    // apiErr.RetryAfter carries the server's requested wait when sent.
+}
+```
+
+## What is not in v0.1.0
+
+The lifecycle store layer from the JavaScript SDK (durable payment state, `on.paid` handlers, and the PostgreSQL adapter) is planned for a later minor version. Everything above is stable and covered by the shared conformance fixtures.

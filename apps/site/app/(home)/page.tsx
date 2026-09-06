@@ -15,7 +15,8 @@ export default function HomePage() {
           <Link className="lp-primary" href="/docs">
             Read the docs
           </Link>
-          <CopyInstall />
+          <CopyInstall command="npm i @cozycodr/lipila" />
+          <CopyInstall command="go get github.com/cozyCodr/lipila-go" />
         </div>
       </section>
 

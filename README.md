@@ -2,12 +2,16 @@
 
 Developer-friendly, provider-specific SDKs for the Lipila payment platform.
 
-This is a community-maintained project, not an official Lipila package. The first implementation is the server-side JavaScript/TypeScript package [`@cozycodr/lipila`](sdks/javascript/README.md). Future language implementations will follow the same observable behavior while keeping idiomatic interfaces.
+This is a community-maintained project, not an official Lipila package. Two implementations exist today, following the same observable behavior with idiomatic interfaces: the server-side JavaScript/TypeScript package [`@cozycodr/lipila`](sdks/javascript/README.md) and the Go module [`github.com/cozyCodr/lipila-go`](sdks/go/README.md), which publishes from [its own repository](https://github.com/cozyCodr/lipila-go).
 
 Documentation: **https://lipilasdk.oapps.dev**
 
 ```bash
 npm install @cozycodr/lipila
+```
+
+```bash
+go get github.com/cozyCodr/lipila-go
 ```
 
 ## Supported operations
@@ -18,7 +22,7 @@ npm install @cozycodr/lipila
 - Verify signed webhooks directly
 - Optionally coordinate durable lifecycle handlers through the same client
 
-The JavaScript SDK defaults to Lipila's sandbox. Production must be selected explicitly.
+Both SDKs default to Lipila's sandbox. Production must be selected explicitly. The Go SDK's lifecycle store layer is planned for a later minor version; every operation above it is at parity.
 
 Lipila uses separate [sandbox](https://dashboard.lipila.dev) and [production](https://dashboard.lipila.io) merchant dashboards. Merchants must onboard separately and obtain environment-specific API keys and webhook configuration from each dashboard; a sandbox account or key does not carry into production.
 
@@ -27,6 +31,7 @@ Lipila uses separate [sandbox](https://dashboard.lipila.dev) and [production](ht
 ```text
 spec/                 Language-neutral provider contract and fixtures
 sdks/javascript/      JavaScript and TypeScript SDK
+sdks/go/              Go SDK (published to github.com/cozyCodr/lipila-go)
 sdks/store-*/         Optional lifecycle store adapters and shared conformance modules
 conformance/          Cross-language conformance guidance
 examples/             Integration examples

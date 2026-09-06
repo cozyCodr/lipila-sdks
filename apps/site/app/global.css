@@ -142,6 +142,17 @@ html {
   border-color: #d4d8e4;
   background: #f0f2f6;
 }
+.lp-copy__cmd {
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 480px) {
+  .lp-copy {
+    font-size: 12px;
+    gap: 8px;
+    padding: 10px 10px 10px 12px;
+  }
+}
 .lp-copy b {
   color: var(--lip-indigo);
 }
